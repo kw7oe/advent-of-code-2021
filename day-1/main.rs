@@ -1,12 +1,20 @@
+use std::env;
 use std::fs::File;
 use std::io::Read;
 
 fn main() -> std::io::Result<()> {
-    let mut file = File::open("sample.txt")?;
+    let mut args: env::Args = env::args();
+    let file_path = args.nth(1).expect("input file path is expected!");
+
+    let mut file = File::open(file_path)?;
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
 
-    let numbers: Vec<&str> = contents.trim().split("\n").collect();
+    let numbers: Vec<u16> = contents
+        .trim()
+        .split("\n")
+        .map(|x| x.parse().unwrap())
+        .collect();
 
     let mut i = 0;
     let mut count = 0;
@@ -16,7 +24,7 @@ fn main() -> std::io::Result<()> {
             break;
         }
 
-        if numbers[i + 1] > numbers[i] {
+        if numbers[i] < numbers[i + 1] {
             count += 1;
         }
 
