@@ -146,14 +146,17 @@ fn flash(numbers: &mut Vec<u8>, index: usize, flashes: &mut u16) {
     .iter()
     .for_each(|index| {
         if let Some(w) = index {
-            let number = numbers[*w] + 1;
+            // We don't touch octopus
+            // that has flashed.
+            if numbers[*w] == 0 {
+                return;
+            }
 
-            if number > 9 {
+            numbers[*w] += 1;
+            if numbers[*w] > 9 {
                 *flashes += 1;
                 numbers[*w] = 0;
                 flash(numbers, *w, flashes);
-            } else if number != 1 {
-                numbers[*w] += 1;
             }
         }
     });
